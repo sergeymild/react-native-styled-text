@@ -1,19 +1,22 @@
 import React, { memo } from 'react';
 import { type StyleProp, Text, type TextStyle } from 'react-native';
 
-const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\]/g;
+const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const boldRegExp = /^bold(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fontSize:(\d+)$/;
 const lineHeightRegExp = /^lineHeight:(\d+)$/;
 const hexRegExp = /^#([0-9a-fA-F]{3,6})$/;
 const colorRegExp = /^[a-zA-Z]+$/;
-const parseStyledText = (input: string) => {
+const parseStyledText = (
+  input: string,
+  onLinkPress?: (link: string) => void
+) => {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
 
   while ((match = regex.exec(input)) !== null) {
-    const [, stylesStr, text] = match;
+    const [, stylesStr, text, link] = match;
     const matchStart = match.index;
     const matchEnd = regex.lastIndex;
 
@@ -83,7 +86,17 @@ const parseStyledText = (input: string) => {
       }
     }
 
-    parts.push(<Text style={style} key={matchStart} children={text} />);
+    parts.push(
+      parts.push(
+        <Text
+          key={matchStart}
+          style={style}
+          onPress={link ? () => onLinkPress?.(link) : undefined}
+        >
+          {text}
+        </Text>
+      )
+    );
     lastIndex = matchEnd;
   }
 
@@ -97,10 +110,13 @@ const parseStyledText = (input: string) => {
 type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
+  onLinkPress?: (link: string) => void;
 };
 
 // 7. Сам компонент
-export const StyledText = memo(({ text, styles }: StyledTextProps) => {
-  const parsedText = parseStyledText(text);
-  return <Text style={styles}>{parsedText}</Text>;
-});
+export const StyledText = memo(
+  ({ text, styles, onLinkPress }: StyledTextProps) => {
+    const parsedText = parseStyledText(text, onLinkPress);
+    return <Text style={styles}>{parsedText}</Text>;
+  }
+);

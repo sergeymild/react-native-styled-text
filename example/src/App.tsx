@@ -43,6 +43,12 @@ export default function App() {
         <StyledText text="_(bold|underline)[Bold and underlined]" />
         <StyledText text="_(italic|underline)[Italic and underlined]" />
         <StyledText text="_(bold|italic|underline)[All basic styles]" />
+        <StyledText
+          text="_(italic|#00f)[Click here](https://example.com)"
+          onLinkPress={(link) => {
+            console.log('[App.press]', link);
+          }}
+        />
       </View>
 
       <View style={styles.section}>
