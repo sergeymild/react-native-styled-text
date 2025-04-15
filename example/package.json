@@ -1,6 +1,6 @@
 {
   "name": "react-native-styled-text-example",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
