@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import { type StyleProp, Text, type TextStyle } from 'react-native';
 
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
+const plainLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
 const boldRegExp = /^bold(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fontSize:(\d+)$/;
 const lineHeightRegExp = /^lineHeight:(\d+)$/;
@@ -107,6 +109,62 @@ const parseStyledText = (
   return parts;
 };
 
+function parsePlainLinks(
+  nodes: React.ReactNode[],
+  onLinkPress?: (link: string) => void
+) {
+  const result: React.ReactNode[] = [];
+
+  for (const node of nodes) {
+    if (typeof node !== 'string') {
+      result.push(node);
+      continue;
+    }
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = plainLinkRegex.exec(node)) !== null) {
+      const matchStart = match.index;
+      const matchEnd = plainLinkRegex.lastIndex;
+
+      if (lastIndex < matchStart) {
+        result.push(node.slice(lastIndex, matchStart));
+      }
+
+      const text = match[1];
+      const link = match[2];
+      if (!text || !link) {
+        lastIndex = matchEnd;
+        continue;
+      }
+
+      result.push(
+        <Text
+          key={`${link}-${matchStart}`}
+          style={{ textDecorationLine: 'underline' }}
+          onPress={() => onLinkPress?.(link)}
+        >
+          {text}
+        </Text>
+      );
+
+      lastIndex = matchEnd;
+    }
+
+    if (lastIndex < node.length) {
+      result.push(node.slice(lastIndex));
+    }
+  }
+
+  return result;
+}
+
+const parseText = (input: string, onLinkPress?: (link: string) => void) => {
+  const styledParsed = parseStyledText(input, onLinkPress);
+  return parsePlainLinks(styledParsed, onLinkPress);
+};
+
 type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
@@ -116,7 +174,7 @@ type StyledTextProps = {
 // 7. Сам компонент
 export const StyledText = memo(
   ({ text, styles, onLinkPress }: StyledTextProps) => {
-    const parsedText = parseStyledText(text, onLinkPress);
+    const parsedText = parseText(text, onLinkPress);
     return <Text style={styles}>{parsedText}</Text>;
   }
 );

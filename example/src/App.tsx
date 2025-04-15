@@ -49,6 +49,13 @@ export default function App() {
             console.log('[App.press]', link);
           }}
         />
+        <StyledText
+          text="[Click here](https://example.com)"
+          styles={{ color: 'black' }}
+          onLinkPress={(link) => {
+            console.log('[App.press]', link);
+          }}
+        />
       </View>
 
       <View style={styles.section}>
