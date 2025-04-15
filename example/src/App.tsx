@@ -1,5 +1,5 @@
 import { StyleSheet, View, ScrollView } from 'react-native';
-import StyledText from 'react-native-styled-text';
+import { StyledText } from 'react-native-styled-text';
 
 export default function App() {
   return (

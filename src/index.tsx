@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Text } from 'react-native';
 
-// 5. Парсер стилей без использования fullMatch
+const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\]/g;
+const boldRegExp = /^bold(?::(\d{3}))?$/;
+const fontSizeRegExp = /^fontSize:(\d+)$/;
+const lineHeightRegExp = /^lineHeight:(\d+)$/;
+const hexRegExp = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+const colorRegExp = /^[a-zA-Z]+$/;
 const parseStyledText = (input: string) => {
-  const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\]/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
@@ -33,7 +37,7 @@ const parseStyledText = (input: string) => {
         } else if (s === 'underline') {
           style.textDecorationLine = 'underline';
         } else if (s.startsWith('bold')) {
-          const matchBold = s.match(/^bold(?::(\d{3}))?$/);
+          const matchBold = s.match(boldRegExp);
           if (matchBold) {
             const weight = matchBold[1] ?? '700';
             if (parseInt(weight) < 100 || parseInt(weight) > 900) {
@@ -47,8 +51,8 @@ const parseStyledText = (input: string) => {
               `Invalid bold style: ${s}. Use "bold" or "bold:100-900".`
             );
           }
-        } else if (/^fontSize:(\d+)$/.test(s)) {
-          const [, size] = s.match(/^fontSize:(\d+)$/)!;
+        } else if (fontSizeRegExp.test(s)) {
+          const [, size] = s.match(fontSizeRegExp)!;
           if (size) {
             const fontSize = parseInt(size, 10);
             if (fontSize <= 0) {
@@ -58,8 +62,8 @@ const parseStyledText = (input: string) => {
             }
             style.fontSize = fontSize;
           }
-        } else if (/^lineHeight:(\d+)$/.test(s)) {
-          const [, lh] = s.match(/^lineHeight:(\d+)$/)!;
+        } else if (lineHeightRegExp.test(s)) {
+          const [, lh] = s.match(lineHeightRegExp)!;
           if (lh) {
             const lineHeight = parseInt(lh, 10);
             if (lineHeight <= 0) {
@@ -69,10 +73,7 @@ const parseStyledText = (input: string) => {
             }
             style.lineHeight = lineHeight;
           }
-        } else if (
-          /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s) ||
-          /^[a-zA-Z]+$/.test(s)
-        ) {
+        } else if (hexRegExp.test(s) || colorRegExp.test(s)) {
           style.color = s;
         } else {
           throw new Error(
@@ -82,11 +83,7 @@ const parseStyledText = (input: string) => {
       }
     }
 
-    parts.push(
-      <Text style={style} key={matchStart}>
-        {text}
-      </Text>
-    );
+    parts.push(<Text style={style} key={matchStart} children={text} />);
     lastIndex = matchEnd;
   }
 
@@ -97,15 +94,12 @@ const parseStyledText = (input: string) => {
   return parts;
 };
 
-// 6. Типизированный компонент для текста с проверкой
 type StyledTextProps = {
   text: string;
 };
 
 // 7. Сам компонент
-const StyledText = ({ text }: StyledTextProps) => {
+export const StyledText = memo(({ text }: StyledTextProps) => {
   const parsedText = parseStyledText(text);
   return <Text>{parsedText}</Text>;
-};
-
-export default StyledText;
+});
