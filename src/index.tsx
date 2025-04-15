@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
-import { Text } from 'react-native';
+import { type StyleProp, Text, type TextStyle } from 'react-native';
 
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\]/g;
 const boldRegExp = /^bold(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fontSize:(\d+)$/;
 const lineHeightRegExp = /^lineHeight:(\d+)$/;
-const hexRegExp = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+const hexRegExp = /^#([0-9a-fA-F]{3,6})$/;
 const colorRegExp = /^[a-zA-Z]+$/;
 const parseStyledText = (input: string) => {
   const parts: React.ReactNode[] = [];
@@ -96,10 +96,11 @@ const parseStyledText = (input: string) => {
 
 type StyledTextProps = {
   text: string;
+  styles?: StyleProp<TextStyle>;
 };
 
 // 7. Сам компонент
-export const StyledText = memo(({ text }: StyledTextProps) => {
+export const StyledText = memo(({ text, styles }: StyledTextProps) => {
   const parsedText = parseStyledText(text);
-  return <Text>{parsedText}</Text>;
+  return <Text style={styles}>{parsedText}</Text>;
 });
