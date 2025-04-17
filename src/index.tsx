@@ -89,15 +89,13 @@ const parseStyledText = (
     }
 
     parts.push(
-      parts.push(
-        <Text
-          key={matchStart}
-          style={style}
-          onPress={link ? () => onLinkPress?.(link) : undefined}
-        >
-          {text}
-        </Text>
-      )
+      <Text
+        key={matchStart}
+        style={style}
+        onPress={link ? () => onLinkPress?.(link) : undefined}
+      >
+        {text}
+      </Text>
     );
     lastIndex = matchEnd;
   }
