@@ -6,17 +6,17 @@ export default function App() {
     <ScrollView style={styles.container}>
       <View style={styles.section}>
         <StyledText text="Basic styles:" />
-        <StyledText text="_(bold)[Bold text]" />
+        <StyledText text="_(fw)[Bold text]" />
         <StyledText text="_(italic)[Italic text]" />
         <StyledText text="_(underline)[Underlined text]" />
       </View>
 
       <View style={styles.section}>
         <StyledText text="Font weights:" />
-        <StyledText text="_(bold:100)[Thin text]" />
-        <StyledText text="_(bold:400)[Normal text]" />
-        <StyledText text="_(bold:700)[Bold text]" />
-        <StyledText text="_(bold:900)[Black text]" />
+        <StyledText text="_(fw:100)[Thin text]" />
+        <StyledText text="_(fw:400)[Normal text]" />
+        <StyledText text="_(fw:700)[Bold text]" />
+        <StyledText text="_(fw:900)[Black text]" />
       </View>
 
       <View style={styles.section}>
@@ -31,18 +31,18 @@ export default function App() {
 
       <View style={styles.section}>
         <StyledText text="Sizes:" />
-        <StyledText text="_(fontSize:12)[Small text]" />
-        <StyledText text="_(fontSize:16)[Normal text]" />
-        <StyledText text="_(fontSize:24)[Large text]" />
-        <StyledText text="_(lineHeight:20)[Text with line height]" />
+        <StyledText text="_(fs:12)[Small text]" />
+        <StyledText text="_(fs:16)[Normal text]" />
+        <StyledText text="_(fs:24)[Large text]" />
+        <StyledText text="_(lh:20)[Text with line height]" />
       </View>
 
       <View style={styles.section}>
         <StyledText text="Combined styles:" />
-        <StyledText text="_(bold|italic)[Bold and italic]" />
-        <StyledText text="_(bold|underline)[Bold and underlined]" />
+        <StyledText text="_(fw|italic)[Bold and italic]" />
+        <StyledText text="_(fw|underline)[Bold and underlined]" />
         <StyledText text="_(italic|underline)[Italic and underlined]" />
-        <StyledText text="_(bold|italic|underline)[All basic styles]" />
+        <StyledText text="_(fw|italic|underline)[All basic styles]" />
         <StyledText
           text="_(italic|#00f)[Click here](https://example.com)"
           onLinkPress={(link) => {
@@ -60,22 +60,22 @@ export default function App() {
 
       <View style={styles.section}>
         <StyledText text="Complex combinations:" />
-        <StyledText text="_(bold:700|red|fontSize:20)[Bold red large text]" />
-        <StyledText text="_(italic|blue|lineHeight:30)[Italic blue text with line height]" />
-        <StyledText text="_(bold:500|underline|#FF0000|fontSize:18)[Medium bold underlined red text]" />
+        <StyledText text="_(fw:700|red|fs:20)[Bold red large text]" />
+        <StyledText text="_(italic|blue|lh:30)[Italic blue text with line height]" />
+        <StyledText text="_(fw:500|underline|#FF0000|fs:18)[Medium bold underlined red text]" />
       </View>
 
       <View style={styles.section}>
         <StyledText text="Mixed text:" />
-        <StyledText text="Normal text _(bold)[bold text] normal again" />
-        <StyledText text="_(bold)[Bold _(red)[red] text]" />
+        <StyledText text="Normal text _(fw)[bold text] normal again" />
+        <StyledText text="_(fw)[Bold _(red)[red] text]" />
         <StyledText text="_(italic)[Italic _(underline)[underlined] text]" />
       </View>
 
       <View style={styles.section}>
         <StyledText text="Multiple styles in one text:" />
-        <StyledText text="_(bold)[Bold] _(italic)[italic] _(underline)[underlined] _(red)[red] _(blue)[blue]" />
-        <StyledText text="_(bold:700)[Bold] _(italic)[italic] _(#FF0000)[red] _(fontSize:20)[large]" />
+        <StyledText text="_(fw)[Bold] _(italic)[italic] _(underline)[underlined] _(red)[red] _(blue)[blue]" />
+        <StyledText text="_(fw:700)[Bold] _(italic)[italic] _(#FF0000)[red] _(fs:20)[large]" />
       </View>
     </ScrollView>
   );

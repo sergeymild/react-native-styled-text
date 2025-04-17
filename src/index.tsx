@@ -4,9 +4,9 @@ import { type StyleProp, Text, type TextStyle } from 'react-native';
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
-const boldRegExp = /^bold(?::(\d{3}))?$/;
-const fontSizeRegExp = /^fontSize:(\d+)$/;
-const lineHeightRegExp = /^lineHeight:(\d+)$/;
+const boldRegExp = /^fw(?::(\d{3}))?$/;
+const fontSizeRegExp = /^fs:(\d+)$/;
+const lineHeightRegExp = /^lh:(\d+)$/;
 const hexRegExp = /^#([0-9a-fA-F]{3,6})$/;
 const colorRegExp = /^[a-zA-Z]+$/;
 const parseStyledText = (
@@ -41,7 +41,7 @@ const parseStyledText = (
           style.fontStyle = 'italic';
         } else if (s === 'underline') {
           style.textDecorationLine = 'underline';
-        } else if (s.startsWith('bold')) {
+        } else if (s.startsWith('fw')) {
           const matchBold = s.match(boldRegExp);
           if (matchBold) {
             const weight = matchBold[1] ?? '700';
