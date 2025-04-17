@@ -1,9 +1,19 @@
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { StyledText } from 'react-native-styled-text';
+import ExpandableText from '../../src/ExpandableText';
 
 export default function App() {
+  const longText =
+    'Lorem ipsum dolor sit amet---Basic styles  Italic text Underlined text Underlined text Underlined text';
   return (
     <ScrollView style={styles.container}>
+      <ExpandableText
+        moreLabel="...read more"
+        lessLabel=" less"
+        text={longText}
+        numberOfLines={2}
+      />
+      <View style={{ marginTop: 20 }} />
       <View style={styles.section}>
         <StyledText text="Basic styles:" />
         <StyledText text="_(fw)[Bold text]" />
@@ -85,7 +95,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 140,
     paddingBottom: 40,
     backgroundColor: '#fff',
   },
