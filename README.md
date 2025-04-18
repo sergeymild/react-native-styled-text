@@ -1,6 +1,6 @@
 # react-native-styled-text
 
-A component for text formatting in React Native using a simple syntax.
+A component for styled text formatting in React Native using a concise and expressive syntax.
 
 ## Installation
 
@@ -13,96 +13,99 @@ yarn add react-native-styled-text
 ## Usage
 
 ```tsx
-import StyledText from 'react-native-styled-text';
+import { StyledText } from 'react-native-styled-text';
 
-// Simple example
-<StyledText text="_(bold)[This is bold text]" />
+// Simple styled text
+<StyledText text="_(fw)[Bold text]" />
 
-// Combining styles
-<StyledText text="_(italic|underline)[This text is italic and underlined]" />
+// Multiple styles
+<StyledText text="_(italic|underline)[Italic and underlined]" />
 
-// Using colors
+// Colors
 <StyledText text="_(red)[Red text]" />
-<StyledText text="_(#FF0000)[Text in hex color]" />
+<StyledText text="_(#FF0000)[Hex color text]" />
 
-// Font size
-<StyledText text="_(fontSize:20)[Large text]" />
+// Font size and line height
+<StyledText text="_(fs:20)[Large text]" />
+<StyledText text="_(lh:30)[Text with more line height]" />
 
-// Line height
-<StyledText text="_(lineHeight:30)[Text with increased line height]" />
+// Combination of styles
+<StyledText text="_(fw:700|italic|#00f|fs:18|lh:26)[Complex styled text]" />
 
-// Combining all styles
-<StyledText text="_(bold:700|italic|red|fontSize:20)[Complex style]" />
+// Links
+<StyledText text="_(underline)[Google](https://google.com)" onLinkPress={(url) => console.log(url)} />
+
+// Plain links without styles
+<StyledText text="Visit [GitHub](https://github.com)" />
 ```
-
-## Supported Styles
-
-### Basic Styles
-
-- `italic` - italic text
-- `underline` - underlined text
-- `bold` - bold text (default 700)
-- `bold:100-900` - bold text with specified weight (100-900)
-
-### Sizes
-
-- `fontSize:number` - font size
-- `lineHeight:number` - line height
-
-### Colors
-
-- Color names (e.g., `red`, `blue`, `green`)
-- Hex color codes (e.g., `#FF0000`, `#00FF00`)
 
 ## Syntax
 
-Basic syntax: `_(style)[text]`
+Styled text uses the following syntax:
 
-Where:
+```
+_(style1|style2|...)[Text](optional_link)
+```
 
-- `style` - one or more styles separated by `|`
-- `text` - text to apply styles to
+You can also use standard Markdown-style links like `[text](url)` without any styles.
+
+## Supported Styles
+
+### Text Styles
+
+- `italic` — italic font style
+- `underline` — underline text
+- `fw` — bold (default to `700`)
+- `fw:100` to `fw:900` — specific font weight
+
+### Font Size & Line Height
+
+- `fs:number` — font size (e.g., `fs:16`)
+- `lh:number` — line height (e.g., `lh:24`)
+
+### Colors
+
+- Named colors (e.g., `red`, `blue`, `green`)
+- Hex codes (e.g., `#FF0000`, `#0f0`, `#000000`)
+
+## Links
+
+- Styled links: `_(underline)[Text](https://example.com)`
+- Plain links: `[Text](https://example.com)` — automatically detected and clickable
+
+Use the `onLinkPress` prop to handle link clicks.
+
+## Component Props
+
+```ts
+type StyledTextProps = {
+  text: string;
+  styles?: StyleProp<TextStyle>;
+  onLinkPress?: (url: string) => void;
+};
+```
 
 ## Examples
 
 ```tsx
-// Simple text
-<StyledText text="Normal text _(bold)[bold text] normal again" />
+// Plain and styled mix
+<StyledText text="Normal _(fw|red)[Bold red] text with [a link](https://example.com)" />
 
-// Multiple styles
-<StyledText text="_(bold|italic|red)[Bold italic red text]" />
-
-// Nested styles
-<StyledText text="_(bold)[Bold _(red)[red] text]" />
-
-// Complex example
-<StyledText text="_(fontSize:20|lineHeight:30|bold:700)[Large text with settings]" />
+// Nested appearance using multiple inline styles
+<StyledText text="_(fw:500|fs:20|#444)[Styled text with link](https://google.com)" />
 ```
+
+## Error Handling
+
+The component will throw clear errors when:
+
+- Styles are empty or unknown
+- Font weights are outside 100–900
+- Font size or line height is invalid (must be > 0)
+- Style syntax is invalid
 
 ## Limitations
 
-- Styles must be valid
-- Colors must be either names or hex codes
-- Font sizes and line heights must be positive numbers
-- Font weight must be in range 100-900
-
-## Errors
-
-The component provides clear error messages for:
-
-- Invalid syntax
-- Invalid styles
-- Invalid size values
-- Invalid font weight values
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+- Nested styles are not supported (no recursion inside `[...]`)
+- Style names must be exact (`fw`, not `bold`, `fs`, not `fontSize`, etc.)
+- Only `https://` links are recognized
