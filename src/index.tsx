@@ -109,7 +109,8 @@ const parseStyledText = (
 
 function parsePlainLinks(
   nodes: React.ReactNode[],
-  onLinkPress?: (link: string) => void
+  onLinkPress?: (link: string) => void,
+  linkStyle?: StyleProp<TextStyle>
 ) {
   const result: React.ReactNode[] = [];
 
@@ -140,7 +141,7 @@ function parsePlainLinks(
       result.push(
         <Text
           key={`${link}-${matchStart}`}
-          style={{ textDecorationLine: 'underline' }}
+          style={linkStyle}
           onPress={() => onLinkPress?.(link)}
         >
           {text}
@@ -158,21 +159,22 @@ function parsePlainLinks(
   return result;
 }
 
-const parseText = (input: string, onLinkPress?: (link: string) => void) => {
+const parseText = (input: string, onLinkPress?: (link: string) => void, linkStyle?: StyleProp<TextStyle>) => {
   const styledParsed = parseStyledText(input, onLinkPress);
-  return parsePlainLinks(styledParsed, onLinkPress);
+  return parsePlainLinks(styledParsed, onLinkPress, linkStyle);
 };
 
 type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
+  linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
 };
 
 // 7. Сам компонент
 export const StyledText = memo(
-  ({ text, styles, onLinkPress }: StyledTextProps) => {
-    const parsedText = parseText(text, onLinkPress);
+  ({ text, styles, onLinkPress, linkStyle }: StyledTextProps) => {
+    const parsedText = parseText(text, onLinkPress, linkStyle);
     return <Text style={styles}>{parsedText}</Text>;
   }
 );
