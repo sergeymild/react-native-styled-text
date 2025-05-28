@@ -26,6 +26,7 @@ export default function App() {
         <StyledText text="_(fw:100)[Thin text]" />
         <StyledText text="_(fw:400)[Normal text]" />
         <StyledText text="_(fw:700)[Bold text]" />
+        <StyledText text="**Markdown Bold text**" />
         <StyledText text="_(fw:900)[Black text]" />
       </View>
 

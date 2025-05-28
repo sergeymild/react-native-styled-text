@@ -2,7 +2,9 @@ import React, { memo } from 'react';
 import { type StyleProp, Text, type TextStyle } from 'react-native';
 
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
-const plainLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
+const markdownBoldRegex = /\*\*([^*]+)\*\*/g;
+
 
 const boldRegExp = /^fw(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fs:(\d+)$/;
@@ -14,16 +16,18 @@ const parseStyledText = (
   onLinkPress?: (link: string) => void
 ) => {
   const parts: React.ReactNode[] = [];
+  let mdProcessed = input;
+  mdProcessed = mdProcessed.replace(markdownBoldRegex, '_(fw:700)[$1]');
   let lastIndex = 0;
   let match;
 
-  while ((match = regex.exec(input)) !== null) {
+  while ((match = regex.exec(mdProcessed)) !== null) {
     const [, stylesStr, text, link] = match;
     const matchStart = match.index;
     const matchEnd = regex.lastIndex;
 
     if (lastIndex < matchStart) {
-      parts.push(input.slice(lastIndex, matchStart));
+      parts.push(mdProcessed.slice(lastIndex, matchStart));
     }
 
     const style: any = {};
