@@ -5,12 +5,13 @@ const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
 const markdownBoldRegex = /\*\*([^*]+)\*\*/g;
 
-
 const boldRegExp = /^fw(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fs:(\d+)$/;
 const lineHeightRegExp = /^lh:(\d+)$/;
 const hexRegExp = /^#([0-9a-fA-F]{3,6})$/;
 const colorRegExp = /^[a-zA-Z]+$/;
+const urlRegex = /(https?:\/\/[^\s)]+)/g;
+
 const parseStyledText = (
   input: string,
   onLinkPress?: (link: string) => void
@@ -127,6 +128,7 @@ function parsePlainLinks(
     let lastIndex = 0;
     let match;
 
+    // 1. Markdown-style ссылки [text](url)
     while ((match = plainLinkRegex.exec(node)) !== null) {
       const matchStart = match.index;
       const matchEnd = plainLinkRegex.lastIndex;
@@ -137,33 +139,61 @@ function parsePlainLinks(
 
       const text = match[1];
       const link = match[2];
-      if (!text || !link) {
-        lastIndex = matchEnd;
-        continue;
+      if (text && link) {
+        result.push(
+          <Text
+            key={`${link}-${matchStart}`}
+            style={linkStyle}
+            onPress={() => onLinkPress?.(link)}
+            children={text}
+          />
+        );
       }
-
-      result.push(
-        <Text
-          key={`${link}-${matchStart}`}
-          style={linkStyle}
-          onPress={() => onLinkPress?.(link)}
-        >
-          {text}
-        </Text>
-      );
 
       lastIndex = matchEnd;
     }
 
-    if (lastIndex < node.length) {
-      result.push(node.slice(lastIndex));
+    // Добавляем оставшийся кусок строки после markdown-ссылок
+    let remainder = node.slice(lastIndex);
+
+    // 2. Обычные ссылки https://...
+    lastIndex = 0;
+    while ((match = urlRegex.exec(remainder)) !== null) {
+      const matchStart = match.index;
+      const matchEnd = urlRegex.lastIndex;
+
+      if (lastIndex < matchStart) {
+        result.push(remainder.slice(lastIndex, matchStart));
+      }
+
+      const link = match[1];
+      if (link) {
+        result.push(
+          <Text
+            key={`${link}-${matchStart}`}
+            style={linkStyle}
+            onPress={() => onLinkPress?.(link)}
+            children={link}
+          />
+        );
+      }
+
+      lastIndex = matchEnd;
+    }
+
+    if (lastIndex < remainder.length) {
+      result.push(remainder.slice(lastIndex));
     }
   }
 
   return result;
 }
 
-const parseText = (input: string, onLinkPress?: (link: string) => void, linkStyle?: StyleProp<TextStyle>) => {
+const parseText = (
+  input: string,
+  onLinkPress?: (link: string) => void,
+  linkStyle?: StyleProp<TextStyle>
+) => {
   const styledParsed = parseStyledText(input, onLinkPress);
   return parsePlainLinks(styledParsed, onLinkPress, linkStyle);
 };
