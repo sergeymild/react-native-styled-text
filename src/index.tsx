@@ -1,5 +1,10 @@
 import React, { memo } from 'react';
-import { type StyleProp, Text, type TextStyle } from 'react-native';
+import {
+  type StyleProp,
+  Text,
+  type TextProps,
+  type TextStyle,
+} from 'react-native';
 
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
@@ -203,12 +208,29 @@ type StyledTextProps = {
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
+  numberOfLines?: number;
+  ellipsizeMode?: TextProps['ellipsizeMode'];
 };
 
 // 7. Сам компонент
 export const StyledText = memo(
-  ({ text, styles, onLinkPress, linkStyle }: StyledTextProps) => {
+  ({
+    text,
+    styles,
+    onLinkPress,
+    linkStyle,
+    numberOfLines,
+    ellipsizeMode,
+  }: StyledTextProps) => {
     const parsedText = parseText(text, onLinkPress, linkStyle);
-    return <Text style={styles}>{parsedText}</Text>;
+    return (
+      <Text
+        style={styles}
+        ellipsizeMode={ellipsizeMode}
+        numberOfLines={numberOfLines}
+      >
+        {parsedText}
+      </Text>
+    );
   }
 );
