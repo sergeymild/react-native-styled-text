@@ -6,6 +6,9 @@ import {
   type TextStyle,
 } from 'react-native';
 
+import ExpandableText from './ExpandableText'
+export {ExpandableText}
+
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
 const markdownBoldRegex = /\*\*([^*]+)\*\*/g;

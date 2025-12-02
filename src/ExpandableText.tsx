@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import {Text, StyleSheet, StyleProp, TextStyle} from 'react-native';
 
 interface Props {
   text: string;
   numberOfLines: number;
   moreLabel?: string;
   lessLabel?: string;
+  style?: StyleProp<TextStyle>
+  moreLessStyle?: StyleProp<TextStyle>
 }
 
 const ExpandableText: React.FC<Props> = ({
@@ -13,6 +15,8 @@ const ExpandableText: React.FC<Props> = ({
   numberOfLines,
   moreLabel = '...more',
   lessLabel = 'Less',
+  style,
+  moreLessStyle
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -54,28 +58,27 @@ const ExpandableText: React.FC<Props> = ({
       setDisplayedText(text);
     }
   };
-  console.log('[ExpandableText.ExpandableText.render]');
 
   return (
     <>
       {!measured ? (
-        <Text style={styles.text} onTextLayout={handleTextLayout}>
+        <Text style={[styles.text, style]} onTextLayout={handleTextLayout}>
           {text}
         </Text>
       ) : !isExpanded ? (
-        <Text style={styles.text}>
+        <Text style={[styles.text, style]}>
           {displayedText}
           {showMore && (
-            <Text onPress={() => setIsExpanded(true)} style={styles.more}>
+            <Text onPress={() => setIsExpanded(true)} style={[styles.more, moreLessStyle]}>
               {' '}
               {moreLabel}
             </Text>
           )}
         </Text>
       ) : (
-        <Text style={styles.text}>
+        <Text style={[styles.text, style]}>
           {text}
-          <Text onPress={() => setIsExpanded(false)} style={styles.more}>
+          <Text onPress={() => setIsExpanded(false)} style={[styles.more, moreLessStyle]}>
             {' '}
             {lessLabel}
           </Text>
