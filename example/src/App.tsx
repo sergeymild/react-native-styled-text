@@ -4,7 +4,7 @@ import ExpandableText from '../../src/ExpandableText';
 
 export default function App() {
   const longText =
-    'Lorem ipsum dolor sit amet---Basic styles  Italic text Underlined text Underlined text Underlined text';
+    'Lorem ipsum dolor sit amet---Basic styles  Italic text Underlined text Underlined text Underlined text Lorem ipsum dolor sit amet---Basic styles  Italic text Underlined text Underlined text Underlined text Lorem ipsum dolor sit amet---Basic styles  Italic text Underlined text Underlined text';
   return (
     <ScrollView style={styles.container}>
       <ExpandableText
@@ -12,6 +12,8 @@ export default function App() {
         lessLabel=" less"
         text={longText}
         numberOfLines={2}
+        startImage={require('../assets/start_quote.png')}
+        endImage={require('../assets/end_quote.png')}
       />
       <View style={{ marginTop: 20 }} />
       <View style={styles.section}>

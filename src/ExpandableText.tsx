@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
-import {Text, StyleSheet, StyleProp, TextStyle} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  type StyleProp,
+  type TextStyle,
+  Image,
+  type ImageSourcePropType,
+  type ImageStyle,
+} from 'react-native';
 
 interface Props {
   text: string;
   numberOfLines: number;
   moreLabel?: string;
   lessLabel?: string;
-  style?: StyleProp<TextStyle>
-  moreLessStyle?: StyleProp<TextStyle>
+  style?: StyleProp<TextStyle>;
+  moreLessStyle?: StyleProp<TextStyle>;
+  startImage?: ImageSourcePropType;
+  endImage?: ImageSourcePropType;
+  imageStyle?: StyleProp<ImageStyle>;
 }
 
 const ExpandableText: React.FC<Props> = ({
@@ -16,7 +27,10 @@ const ExpandableText: React.FC<Props> = ({
   moreLabel = '...more',
   lessLabel = 'Less',
   style,
-  moreLessStyle
+  moreLessStyle,
+  startImage,
+  endImage,
+  imageStyle,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -59,6 +73,16 @@ const ExpandableText: React.FC<Props> = ({
     }
   };
 
+  const renderStartImage = () =>
+    startImage ? (
+      <Image source={startImage} style={[styles.image, imageStyle]} />
+    ) : null;
+
+  const renderEndImage = () =>
+    endImage ? (
+      <Image source={endImage} style={[styles.image, imageStyle]} />
+    ) : null;
+
   return (
     <>
       {!measured ? (
@@ -67,21 +91,31 @@ const ExpandableText: React.FC<Props> = ({
         </Text>
       ) : !isExpanded ? (
         <Text style={[styles.text, style]}>
+          {renderStartImage()}
           {displayedText}
           {showMore && (
-            <Text onPress={() => setIsExpanded(true)} style={[styles.more, moreLessStyle]}>
+            <Text
+              onPress={() => setIsExpanded(true)}
+              style={[styles.more, moreLessStyle]}
+            >
               {' '}
               {moreLabel}
             </Text>
           )}
+          {renderEndImage()}
         </Text>
       ) : (
         <Text style={[styles.text, style]}>
+          {renderStartImage()}
           {text}
-          <Text onPress={() => setIsExpanded(false)} style={[styles.more, moreLessStyle]}>
+          <Text
+            onPress={() => setIsExpanded(false)}
+            style={[styles.more, moreLessStyle]}
+          >
             {' '}
             {lessLabel}
           </Text>
+          {renderEndImage()}
         </Text>
       )}
     </>
@@ -95,6 +129,10 @@ const styles = StyleSheet.create({
   },
   more: {
     color: 'blue',
+  },
+  image: {
+    width: 16,
+    height: 16,
   },
 });
 

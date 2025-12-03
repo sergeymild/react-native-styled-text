@@ -1,12 +1,11 @@
 import React, { memo } from 'react';
 import { type StyleProp, Text, type TextStyle, StyleSheet } from 'react-native';
-import ExpandableText from './ExpandableText'
-export {ExpandableText}
+import ExpandableText from './ExpandableText';
+export { ExpandableText };
 
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
 const markdownBoldRegex = /\*\*([^*]+)\*\*/g;
-
 
 const boldRegExp = /^fw(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fs:(\d+)$/;
