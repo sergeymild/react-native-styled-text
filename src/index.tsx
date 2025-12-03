@@ -1,11 +1,5 @@
 import React, { memo } from 'react';
-import {
-  type StyleProp,
-  Text,
-  type TextProps,
-  type TextStyle,
-} from 'react-native';
-
+import { type StyleProp, Text, type TextStyle, StyleSheet } from 'react-native';
 import ExpandableText from './ExpandableText'
 export {ExpandableText}
 
@@ -13,16 +7,19 @@ const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
 const markdownBoldRegex = /\*\*([^*]+)\*\*/g;
 
+
 const boldRegExp = /^fw(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fs:(\d+)$/;
 const lineHeightRegExp = /^lh:(\d+)$/;
 const hexRegExp = /^#([0-9a-fA-F]{3,6})$/;
 const colorRegExp = /^[a-zA-Z]+$/;
-const urlRegex = /(https?:\/\/[^\s)]+)/g;
+
+type BaseStyle = Pick<TextStyle, 'fontSize' | 'lineHeight' | 'fontFamily'>;
 
 const parseStyledText = (
   input: string,
-  onLinkPress?: (link: string) => void
+  onLinkPress?: (link: string) => void,
+  baseStyle?: BaseStyle
 ) => {
   const parts: React.ReactNode[] = [];
   let mdProcessed = input;
@@ -39,7 +36,7 @@ const parseStyledText = (
       parts.push(mdProcessed.slice(lastIndex, matchStart));
     }
 
-    const style: any = {};
+    const style: TextStyle = {};
     if (stylesStr) {
       const styles = stylesStr.split('|').map((s) => s.trim());
 
@@ -63,7 +60,7 @@ const parseStyledText = (
                 `Invalid font weight: ${weight}. Must be between 100 and 900.`
               );
             }
-            style.fontWeight = weight;
+            style.fontWeight = weight as TextStyle['fontWeight'];
           } else {
             throw new Error(
               `Invalid bold style: ${s}. Use "bold" or "bold:100-900".`
@@ -104,7 +101,7 @@ const parseStyledText = (
     parts.push(
       <Text
         key={matchStart}
-        style={style}
+        style={[baseStyle, style]}
         onPress={link ? () => onLinkPress?.(link) : undefined}
       >
         {text}
@@ -123,7 +120,8 @@ const parseStyledText = (
 function parsePlainLinks(
   nodes: React.ReactNode[],
   onLinkPress?: (link: string) => void,
-  linkStyle?: StyleProp<TextStyle>
+  linkStyle?: StyleProp<TextStyle>,
+  baseStyle?: BaseStyle
 ) {
   const result: React.ReactNode[] = [];
 
@@ -136,7 +134,6 @@ function parsePlainLinks(
     let lastIndex = 0;
     let match;
 
-    // 1. Markdown-style ссылки [text](url)
     while ((match = plainLinkRegex.exec(node)) !== null) {
       const matchStart = match.index;
       const matchEnd = plainLinkRegex.lastIndex;
@@ -147,50 +144,26 @@ function parsePlainLinks(
 
       const text = match[1];
       const link = match[2];
-      if (text && link) {
-        result.push(
-          <Text
-            key={`${link}-${matchStart}`}
-            style={linkStyle}
-            onPress={() => onLinkPress?.(link)}
-            children={text}
-          />
-        );
+      if (!text || !link) {
+        lastIndex = matchEnd;
+        continue;
       }
+
+      result.push(
+        <Text
+          key={`${link}-${matchStart}`}
+          style={[baseStyle, linkStyle]}
+          onPress={() => onLinkPress?.(link)}
+        >
+          {text}
+        </Text>
+      );
 
       lastIndex = matchEnd;
     }
 
-    // Добавляем оставшийся кусок строки после markdown-ссылок
-    let remainder = node.slice(lastIndex);
-
-    // 2. Обычные ссылки https://...
-    lastIndex = 0;
-    while ((match = urlRegex.exec(remainder)) !== null) {
-      const matchStart = match.index;
-      const matchEnd = urlRegex.lastIndex;
-
-      if (lastIndex < matchStart) {
-        result.push(remainder.slice(lastIndex, matchStart));
-      }
-
-      const link = match[1];
-      if (link) {
-        result.push(
-          <Text
-            key={`${link}-${matchStart}`}
-            style={linkStyle}
-            onPress={() => onLinkPress?.(link)}
-            children={link}
-          />
-        );
-      }
-
-      lastIndex = matchEnd;
-    }
-
-    if (lastIndex < remainder.length) {
-      result.push(remainder.slice(lastIndex));
+    if (lastIndex < node.length) {
+      result.push(node.slice(lastIndex));
     }
   }
 
@@ -200,10 +173,11 @@ function parsePlainLinks(
 const parseText = (
   input: string,
   onLinkPress?: (link: string) => void,
-  linkStyle?: StyleProp<TextStyle>
+  linkStyle?: StyleProp<TextStyle>,
+  baseStyle?: BaseStyle
 ) => {
-  const styledParsed = parseStyledText(input, onLinkPress);
-  return parsePlainLinks(styledParsed, onLinkPress, linkStyle);
+  const styledParsed = parseStyledText(input, onLinkPress, baseStyle);
+  return parsePlainLinks(styledParsed, onLinkPress, linkStyle, baseStyle);
 };
 
 type StyledTextProps = {
@@ -211,29 +185,20 @@ type StyledTextProps = {
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
-  numberOfLines?: number;
-  ellipsizeMode?: TextProps['ellipsizeMode'];
 };
 
 // 7. Сам компонент
 export const StyledText = memo(
-  ({
-    text,
-    styles,
-    onLinkPress,
-    linkStyle,
-    numberOfLines,
-    ellipsizeMode,
-  }: StyledTextProps) => {
-    const parsedText = parseText(text, onLinkPress, linkStyle);
-    return (
-      <Text
-        style={styles}
-        ellipsizeMode={ellipsizeMode}
-        numberOfLines={numberOfLines}
-      >
-        {parsedText}
-      </Text>
-    );
+  ({ text, styles, onLinkPress, linkStyle }: StyledTextProps) => {
+    const flatStyles = StyleSheet.flatten(styles);
+    const baseStyle: BaseStyle | undefined = flatStyles
+      ? {
+          fontSize: flatStyles.fontSize,
+          lineHeight: flatStyles.lineHeight,
+          fontFamily: flatStyles.fontFamily,
+        }
+      : undefined;
+    const parsedText = parseText(text, onLinkPress, linkStyle, baseStyle);
+    return <Text style={styles}>{parsedText}</Text>;
   }
 );
