@@ -109,8 +109,8 @@ const parseStyledText = (
     lastIndex = matchEnd;
   }
 
-  if (lastIndex < input.length) {
-    parts.push(input.slice(lastIndex));
+  if (lastIndex < mdProcessed.length) {
+    parts.push(mdProcessed.slice(lastIndex));
   }
 
   return parts;
