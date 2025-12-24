@@ -1,5 +1,11 @@
 import React, { memo } from 'react';
-import { type StyleProp, Text, type TextStyle, StyleSheet } from 'react-native';
+import {
+  type StyleProp,
+  Text,
+  type TextProps,
+  type TextStyle,
+  StyleSheet,
+} from 'react-native';
 import ExpandableText from './ExpandableText';
 export { ExpandableText };
 
@@ -183,9 +189,8 @@ type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
-  allowFontScaling?: boolean;
   onLinkPress?: (link: string) => void;
-};
+} & Pick<TextProps, 'numberOfLines' | 'ellipsizeMode' | 'allowFontScaling'>;
 
 // 7. Сам компонент
 export const StyledText = memo(
@@ -194,7 +199,9 @@ export const StyledText = memo(
     styles,
     onLinkPress,
     linkStyle,
+    numberOfLines,
     allowFontScaling,
+    ellipsizeMode,
   }: StyledTextProps) => {
     const flatStyles = StyleSheet.flatten(styles);
     const baseStyle: BaseStyle | undefined = flatStyles
@@ -206,7 +213,12 @@ export const StyledText = memo(
       : undefined;
     const parsedText = parseText(text, onLinkPress, linkStyle, baseStyle);
     return (
-      <Text allowFontScaling={allowFontScaling} style={styles}>
+      <Text
+        allowFontScaling={allowFontScaling}
+        ellipsizeMode={ellipsizeMode}
+        numberOfLines={numberOfLines}
+        style={styles}
+      >
         {parsedText}
       </Text>
     );
