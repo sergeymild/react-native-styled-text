@@ -19,6 +19,7 @@ interface Props {
   startImage?: ImageSourcePropType;
   endImage?: ImageSourcePropType;
   imageStyle?: StyleProp<ImageStyle>;
+  allowFontScaling?: boolean;
 }
 
 const ExpandableText: React.FC<Props> = ({
@@ -30,6 +31,7 @@ const ExpandableText: React.FC<Props> = ({
   moreLessStyle,
   startImage,
   endImage,
+  allowFontScaling,
   imageStyle,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -86,11 +88,15 @@ const ExpandableText: React.FC<Props> = ({
   return (
     <>
       {!measured ? (
-        <Text style={[styles.text, style]} onTextLayout={handleTextLayout}>
+        <Text
+          allowFontScaling={allowFontScaling}
+          style={[styles.text, style]}
+          onTextLayout={handleTextLayout}
+        >
           {text}
         </Text>
       ) : !isExpanded ? (
-        <Text style={[styles.text, style]}>
+        <Text allowFontScaling={allowFontScaling} style={[styles.text, style]}>
           {renderStartImage()}
           {displayedText}
           {showMore && (
@@ -105,7 +111,7 @@ const ExpandableText: React.FC<Props> = ({
           {renderEndImage()}
         </Text>
       ) : (
-        <Text style={[styles.text, style]}>
+        <Text allowFontScaling={allowFontScaling} style={[styles.text, style]}>
           {renderStartImage()}
           {text}
           <Text

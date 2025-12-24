@@ -183,12 +183,19 @@ type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
+  allowFontScaling?: boolean;
   onLinkPress?: (link: string) => void;
 };
 
 // 7. Сам компонент
 export const StyledText = memo(
-  ({ text, styles, onLinkPress, linkStyle }: StyledTextProps) => {
+  ({
+    text,
+    styles,
+    onLinkPress,
+    linkStyle,
+    allowFontScaling,
+  }: StyledTextProps) => {
     const flatStyles = StyleSheet.flatten(styles);
     const baseStyle: BaseStyle | undefined = flatStyles
       ? {
@@ -198,6 +205,10 @@ export const StyledText = memo(
         }
       : undefined;
     const parsedText = parseText(text, onLinkPress, linkStyle, baseStyle);
-    return <Text style={styles}>{parsedText}</Text>;
+    return (
+      <Text allowFontScaling={allowFontScaling} style={styles}>
+        {parsedText}
+      </Text>
+    );
   }
 );

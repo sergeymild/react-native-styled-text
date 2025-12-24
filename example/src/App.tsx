@@ -63,6 +63,12 @@ export default function App() {
           }}
         />
         <StyledText
+          text="_(italic|#00f)[Click here](https://example.com)"
+          onLinkPress={(link) => {
+            console.log('[App.press]', link);
+          }}
+        />
+        <StyledText
           text="[Click here](https://example.com)"
           styles={{ color: 'black' }}
           onLinkPress={(link) => {
