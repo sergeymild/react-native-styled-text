@@ -188,6 +188,7 @@ const parseText = (
 type StyledTextProps = {
   text: string;
   nativeID?: string;
+  testID?: string;
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
@@ -204,6 +205,7 @@ export const StyledText = memo(
     allowFontScaling,
     ellipsizeMode,
     nativeID,
+    testID,
   }: StyledTextProps) => {
     const flatStyles = StyleSheet.flatten(styles);
     const baseStyle: BaseStyle | undefined = flatStyles
@@ -217,6 +219,7 @@ export const StyledText = memo(
     return (
       <Text
         nativeID={nativeID}
+        testID={testID}
         allowFontScaling={allowFontScaling}
         ellipsizeMode={ellipsizeMode}
         numberOfLines={numberOfLines}
