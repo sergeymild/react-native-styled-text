@@ -5,6 +5,7 @@ import {
   type TextProps,
   type TextStyle,
   StyleSheet,
+  AccessibilityRole,
 } from 'react-native';
 import ExpandableText from './ExpandableText';
 export { ExpandableText };
@@ -192,6 +193,9 @@ type StyledTextProps = {
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
+  accessibilityLabel?: string;
+  accessible?: boolean;
+  accessibilityRole?: AccessibilityRole;
 } & Pick<TextProps, 'numberOfLines' | 'ellipsizeMode' | 'allowFontScaling'>;
 
 // 7. Сам компонент
@@ -206,6 +210,9 @@ export const StyledText = memo(
     ellipsizeMode,
     nativeID,
     testID,
+    accessibilityLabel,
+    accessibilityRole,
+    accessible,
   }: StyledTextProps) => {
     const flatStyles = StyleSheet.flatten(styles);
     const baseStyle: BaseStyle | undefined = flatStyles
@@ -218,6 +225,9 @@ export const StyledText = memo(
     const parsedText = parseText(text, onLinkPress, linkStyle, baseStyle);
     return (
       <Text
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole={accessibilityRole}
+        accessible={accessible}
         nativeID={nativeID}
         testID={testID}
         allowFontScaling={allowFontScaling}
