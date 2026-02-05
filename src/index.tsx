@@ -5,7 +5,7 @@ import {
   type TextProps,
   type TextStyle,
   StyleSheet,
-  AccessibilityRole,
+  type AccessibilityRole,
 } from 'react-native';
 import ExpandableText from './ExpandableText';
 export { ExpandableText };
