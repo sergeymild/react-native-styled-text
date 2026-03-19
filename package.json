@@ -1,6 +1,6 @@
 {
   "name": "react-native-styled-text",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Styled text",
   "main": "src/index.tsx",
   "module": "src/index.tsx",

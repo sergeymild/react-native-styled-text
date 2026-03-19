@@ -13,6 +13,7 @@ export { ExpandableText };
 const regex = /_(?:\(([^)]*)\))?\[([^\]]+)\](?:\((https?:\/\/[^\s)]+)\))?/g;
 const plainLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
 const markdownBoldRegex = /\*\*([^*]+)\*\*/g;
+const plainUrlRegex = /https?:\/\/[^\s]+/g;
 
 const boldRegExp = /^fw(?::(\d{3}))?$/;
 const fontSizeRegExp = /^fs:(\d+)$/;
@@ -176,6 +177,53 @@ function parsePlainLinks(
   return result;
 }
 
+function parsePlainUrls(
+  nodes: React.ReactNode[],
+  onLinkPress?: (link: string) => void,
+  linkStyle?: StyleProp<TextStyle>,
+  baseStyle?: BaseStyle
+) {
+  const result: React.ReactNode[] = [];
+
+  for (const node of nodes) {
+    if (typeof node !== 'string') {
+      result.push(node);
+      continue;
+    }
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = plainUrlRegex.exec(node)) !== null) {
+      const matchStart = match.index;
+      const matchEnd = plainUrlRegex.lastIndex;
+
+      if (lastIndex < matchStart) {
+        result.push(node.slice(lastIndex, matchStart));
+      }
+
+      const url = match[0]!;
+      result.push(
+        <Text
+          key={`url-${matchStart}`}
+          style={[baseStyle, linkStyle]}
+          onPress={() => onLinkPress?.(url)}
+        >
+          {url}
+        </Text>
+      );
+
+      lastIndex = matchEnd;
+    }
+
+    if (lastIndex < node.length) {
+      result.push(node.slice(lastIndex));
+    }
+  }
+
+  return result;
+}
+
 const parseText = (
   input: string,
   onLinkPress?: (link: string) => void,
@@ -183,7 +231,13 @@ const parseText = (
   baseStyle?: BaseStyle
 ) => {
   const styledParsed = parseStyledText(input, onLinkPress, baseStyle);
-  return parsePlainLinks(styledParsed, onLinkPress, linkStyle, baseStyle);
+  const withPlainLinks = parsePlainLinks(
+    styledParsed,
+    onLinkPress,
+    linkStyle,
+    baseStyle
+  );
+  return parsePlainUrls(withPlainLinks, onLinkPress, linkStyle, baseStyle);
 };
 
 type StyledTextProps = {

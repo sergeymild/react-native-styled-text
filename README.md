@@ -37,6 +37,13 @@ import { StyledText } from 'react-native-styled-text';
 
 // Plain links without styles
 <StyledText text="Visit [GitHub](https://github.com)" />
+
+// Plain URLs — automatically detected and clickable
+<StyledText
+  text="Visit https://example.com for more info"
+  linkStyle={{ color: 'blue', textDecorationLine: 'underline' }}
+  onLinkPress={(url) => console.log(url)}
+/>
 ```
 
 ## Syntax
@@ -71,9 +78,10 @@ You can also use standard Markdown-style links like `[text](url)` without any st
 ## Links
 
 - Styled links: `_(underline)[Text](https://example.com)`
-- Plain links: `[Text](https://example.com)` — automatically detected and clickable
+- Markdown links: `[Text](https://example.com)` — automatically detected and clickable
+- Plain URLs: `https://example.com` — raw URLs in text are auto-detected and rendered as clickable links
 
-Use the `onLinkPress` prop to handle link clicks.
+Use the `onLinkPress` prop to handle link clicks. Use `linkStyle` to customize the appearance of markdown and plain URL links.
 
 ## Component Props
 
@@ -81,6 +89,7 @@ Use the `onLinkPress` prop to handle link clicks.
 type StyledTextProps = {
   text: string;
   styles?: StyleProp<TextStyle>;
+  linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (url: string) => void;
 };
 ```
@@ -93,6 +102,13 @@ type StyledTextProps = {
 
 // Nested appearance using multiple inline styles
 <StyledText text="_(fw:500|fs:20|#444)[Styled text with link](https://google.com)" />
+
+// Plain URLs auto-detected in text
+<StyledText
+  text="Check https://github.com and https://google.com"
+  linkStyle={{ color: 'blue', textDecorationLine: 'underline' }}
+  onLinkPress={(url) => console.log(url)}
+/>
 ```
 
 ## Error Handling
@@ -108,4 +124,4 @@ The component will throw clear errors when:
 
 - Nested styles are not supported (no recursion inside `[...]`)
 - Style names must be exact (`fw`, not `bold`, `fs`, not `fontSize`, etc.)
-- Only `https://` links are recognized
+- Both `http://` and `https://` URLs are recognized

@@ -75,6 +75,22 @@ export default function App() {
             console.log('[App.press]', link);
           }}
         />
+        <StyledText
+          text="Visit https://example.com for more info"
+          styles={{ color: 'black' }}
+          linkStyle={{ color: 'blue', textDecorationLine: 'underline' }}
+          onLinkPress={(link) => {
+            console.log('[App.press]', link);
+          }}
+        />
+        <StyledText
+          text="Check https://github.com and https://google.com"
+          styles={{ color: 'black' }}
+          linkStyle={{ color: 'blue', textDecorationLine: 'underline' }}
+          onLinkPress={(link) => {
+            console.log('[App.press]', link);
+          }}
+        />
       </View>
 
       <View style={styles.section}>
