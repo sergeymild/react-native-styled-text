@@ -247,6 +247,7 @@ type StyledTextProps = {
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (link: string) => void;
+  disableLinks?: boolean;
   accessibilityLabel?: string;
   accessible?: boolean;
   accessibilityRole?: AccessibilityRole;
@@ -259,6 +260,7 @@ export const StyledText = memo(
     styles,
     onLinkPress,
     linkStyle,
+    disableLinks,
     numberOfLines,
     allowFontScaling,
     ellipsizeMode,
@@ -276,7 +278,13 @@ export const StyledText = memo(
           fontFamily: flatStyles.fontFamily,
         }
       : undefined;
-    const parsedText = parseText(text, onLinkPress, linkStyle, baseStyle);
+    const effectiveLinkPress = disableLinks ? undefined : onLinkPress;
+    const parsedText = parseText(
+      text,
+      effectiveLinkPress,
+      linkStyle,
+      baseStyle
+    );
     return (
       <Text
         accessibilityLabel={accessibilityLabel}

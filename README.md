@@ -91,8 +91,17 @@ type StyledTextProps = {
   styles?: StyleProp<TextStyle>;
   linkStyle?: StyleProp<TextStyle>;
   onLinkPress?: (url: string) => void;
+  disableLinks?: boolean;
 };
 ```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `text` | `string` | Text with styled/link markup |
+| `styles` | `StyleProp<TextStyle>` | Base text styles |
+| `linkStyle` | `StyleProp<TextStyle>` | Style for markdown and plain URL links |
+| `onLinkPress` | `(url: string) => void` | Link press handler |
+| `disableLinks` | `boolean` | When `true`, links are still rendered visually but clicks are disabled |
 
 ## Examples
 
