@@ -109,7 +109,7 @@ const parseStyledText = (
       <Text
         key={matchStart}
         style={[baseStyle, style]}
-        onPress={link ? () => onLinkPress?.(link) : undefined}
+        onPress={link && onLinkPress ? () => onLinkPress(link) : undefined}
       >
         {text}
       </Text>
@@ -160,7 +160,7 @@ function parsePlainLinks(
         <Text
           key={`${link}-${matchStart}`}
           style={[baseStyle, linkStyle]}
-          onPress={() => onLinkPress?.(link)}
+          onPress={onLinkPress ? () => onLinkPress(link) : undefined}
         >
           {text}
         </Text>
@@ -207,7 +207,7 @@ function parsePlainUrls(
         <Text
           key={`url-${matchStart}`}
           style={[baseStyle, linkStyle]}
-          onPress={() => onLinkPress?.(url)}
+          onPress={onLinkPress ? () => onLinkPress(url) : undefined}
         >
           {url}
         </Text>
