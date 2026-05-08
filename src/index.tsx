@@ -251,7 +251,13 @@ type StyledTextProps = {
   accessibilityLabel?: string;
   accessible?: boolean;
   accessibilityRole?: AccessibilityRole;
-} & Pick<TextProps, 'numberOfLines' | 'ellipsizeMode' | 'allowFontScaling'>;
+} & Pick<
+  TextProps,
+  | 'numberOfLines'
+  | 'ellipsizeMode'
+  | 'allowFontScaling'
+  | 'maxFontSizeMultiplier'
+>;
 
 // 7. Сам компонент
 export const StyledText = memo(
@@ -263,6 +269,7 @@ export const StyledText = memo(
     disableLinks,
     numberOfLines,
     allowFontScaling,
+    maxFontSizeMultiplier,
     ellipsizeMode,
     nativeID,
     testID,
@@ -293,6 +300,7 @@ export const StyledText = memo(
         nativeID={nativeID}
         testID={testID}
         allowFontScaling={allowFontScaling}
+        maxFontSizeMultiplier={maxFontSizeMultiplier}
         ellipsizeMode={ellipsizeMode}
         numberOfLines={numberOfLines}
         style={styles}
